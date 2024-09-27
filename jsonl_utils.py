@@ -15,7 +15,10 @@ def _read_jsonl(file):
         data = []
         for i, line in enumerate(f):
             try:
-                data.append(json.loads(line))
+                if line.strip():
+                    data.append(json.loads(line))
+                else:
+                    rich.print(f"[yellow]warning: line {i+1} is empty; skipping[/yellow]", file=sys.stderr)
             except json.JSONDecodeError:
                 raise ValueError(f"line {i+1} is not valid JSON")
     return data
