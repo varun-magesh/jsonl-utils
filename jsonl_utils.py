@@ -49,6 +49,17 @@ def head(file):
         return
     pprint(data[0])
 
+@cli.command("clean", help="clean format of a jsonl file")
+@click.argument("file", type=click.Path(exists=True))
+@click.argument("output", type=click.Path(), required=True)
+def clean(file, output):
+    if file == "-":
+        data = json.loads(sys.stdin.read())
+    else:
+        data = _read_jsonl(file)
+    _write_jsonl(data, output)
+
+
 def are_keys_consistent(data):
     keys = set(data[0].keys())
     for item in data[1:]:
