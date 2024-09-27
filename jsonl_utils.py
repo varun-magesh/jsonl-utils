@@ -4,13 +4,21 @@ from rich.pretty import pprint
 import rich
 import sys
 
+rich.pretty.install()
+
 @click.group()
 def cli():
     pass
 
 def _read_jsonl(file):
     with open(file) as f:
-        return [json.loads(line) for line in f]
+        data = []
+        for i, line in enumerate(f):
+            try:
+                data.append(json.loads(line))
+            except json.JSONDecodeError:
+                raise ValueError(f"line {i+1} is not valid JSON")
+    return data
 
 def _write_jsonl(data, file):
     if file == sys.stdout:
